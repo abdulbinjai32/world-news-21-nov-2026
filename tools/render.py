@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Draw 'THE WORLD IN ONE DAY' - Saturday 21 November 2026 (1024x1024).
-
-The page carries 40 stories from seven regions, all dated to the day, and is
-drawn from fixed inputs: the same code writes the same bytes on every run.
-"""
+"""Draw 'THE WORLD IN ONE DAY' - Saturday 21 November 2026 (1024x1024)."""
 import math
 from PIL import Image, ImageDraw, ImageFont
 
@@ -217,8 +213,6 @@ def icon(kind, x0, y0, x1, y1, accent):
         d.rectangle([x0 + 8, y0 + 6, x1 - 8, y1 - 6], outline=accent, width=3)
 
 # ---------------- card ----------------
-# one card = colour bar + pictogram + serif headline + optional deck; the accent
-# colour is the story's region, so the page reads as regions at a glance.
 def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, num=None,
          deck=None, bar=15):
     box(x0, y0, x1, y1, fill=(253, 251, 245), outline=(198, 191, 176))
@@ -228,7 +222,11 @@ def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, nu
     if num is not None:
         text(x1 - 5, y0 + int(bar * 0.22), str(num), f_lab, (255, 255, 255), "ra")
     iw = x1 - x0 - 12
-    icon(kind, x0 + 6, y0 + bar + 4, x0 + 6 + iw, y0 + bar + 4 + ic, accent)
+    px0, py0 = x0 + 4, y0 + bar + 3
+    px1, py1 = x0 + 4 + iw + 4, y0 + bar + 5 + ic
+    d.rectangle([px0, py0, px1, py1], fill=tint(accent, 0.16), outline=tint(accent, 0.42))
+    d.rectangle([px0, py0, px0 + 5, py1], fill=accent)
+    icon(kind, px0 + 8, py0 + 2, px1 - 4, py1 - 1, accent)
     yy = y0 + bar + 8 + ic
     f_h = F(SB, hl)
     yy = para(x0 + 6, yy, headline, f_h, x1 - x0 - 12, INK, lh=hl + 1, maxlines=3)
@@ -249,7 +247,11 @@ def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, nu
     if num is not None:
         text(x1 - 6, y0 + int(bar * 0.2), str(num), f_lab, (255, 255, 255), "ra")
     iw = x1 - x0 - 12
-    icon(kind, x0 + 6, y0 + bar + 4, x0 + 6 + iw, y0 + bar + 4 + ic, accent)
+    px0, py0 = x0 + 4, y0 + bar + 3
+    px1, py1 = x0 + 4 + iw + 4, y0 + bar + 5 + ic
+    d.rectangle([px0, py0, px1, py1], fill=tint(accent, 0.16), outline=tint(accent, 0.42))
+    d.rectangle([px0, py0, px0 + 5, py1], fill=accent)
+    icon(kind, px0 + 8, py0 + 2, px1 - 4, py1 - 1, accent)
     yy = y0 + bar + 8 + ic
     yy = para(x0 + 6, yy, headline, F(SB, hl), x1 - x0 - 12, INK, lh=hl + 2, maxlines=3)
     if deck:
@@ -381,5 +383,5 @@ para(PAD + 74, DY0 + 4,
 text(W // 2, 1003, "THE WORLD IN ONE DAY  \u00b7  drawn from wire reports of 21 November 2026  \u00b7  counts and claims attributed to those who made them",
      F(NR, 8), GRAY, "ma")
 
-img.save("/home/ubuntu/makefun-news/entry4.png", optimize=True)
+img.save("/home/ubuntu/makefun-news/entry5.png", optimize=True)
 print("saved")
