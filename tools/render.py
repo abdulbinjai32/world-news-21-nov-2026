@@ -269,7 +269,7 @@ cw = (W - 2 * PAD - 2 * 8) // 3
 for i, s in enumerate(LEADS):
     x0 = PAD + i * (cw + 8)
     card(x0, cy0, x0 + cw, cy1, s["kind"], s["label"], s["headline"], s["accent"], s["region"],
-         hl=24, ic=118, num=i + 1, deck=s["deck"], bar=18, src=s["src"])
+         hl=26, ic=134, num=i + 1, deck=s["deck"], bar=19, src=s["src"])
 
 ROW2 = [("drone", "HORMUZ: DRONE", "Iran says it downed a 58th US MQ-9", C_ME, "MIDDLE EAST", 4),
         ("handshake", "TEHRAN: TALKS", "Araqchi still hopes for a deal; Trump says no", C_ME, "MIDDLE EAST", 5),
@@ -282,25 +282,11 @@ ROW3 = [("coin", "MARKETS: BITCOIN", "Bitcoin at $56,900 in an AI-led selloff", 
         ("mine", "SYDNEY: COALMINE", "NSW passes Mount Pleasant mine law", C_OC, "OCEANIA", 12),
         ("boat", "BAYELSA: BOAT", "Burial boat capsizes; 30 dead, 300 missing", C_AF, "AFRICA", 13)]
 
-SRC = {
-    "HORMUZ: DRONE": "IRGC via IRIB",
-    "TEHRAN: TALKS": "Tehran \u00b7 Reuters",
-    "GAZA: STRIKES": "Gaza \u00b7 IDF, NBC",
-    "PERU: QUAKE 6.7": "USGS \u00b7 GDACS",
-    "GENEVA: ROBOTS": "Geneva \u00b7 Reuters",
-    "MARKETS: BITCOIN": "Markets \u00b7 Binance",
-    "DAVAO: 146 SAFE": "Davao \u00b7 AP, CNA",
-    "TOKYO: OIL": "Tokyo \u00b7 Kyodo",
-    "SYDNEY: COALMINE": "Sydney \u00b7 Guardian",
-    "BAYELSA: BOAT": "Bayelsa \u00b7 Daily Post",
-}
-
 def draw_row(row, y0, y1):
     cwid = (W - 2 * PAD - 4 * 5) // 5
     for i, (kind, label, head, accent, region, num) in enumerate(row):
         x0 = PAD + i * (cwid + 5)
-        card(x0, y0, x0 + cwid, y1, kind, label, head, accent, region, hl=13, ic=44,
-             num=num, bar=15, src=SRC.get(label))
+        card(x0, y0, x0 + cwid, y1, kind, label, head, accent, region, hl=13, ic=44, num=num, bar=15)
 
 draw_row(ROW2, 470, 616)
 draw_row(ROW3, 624, 770)
@@ -389,5 +375,5 @@ para(PAD + 74, DY0 + 4,
 text(W // 2, 1003, "THE WORLD IN ONE DAY  \u00b7  drawn from wire reports of 21 November 2026  \u00b7  counts and claims attributed to those who made them",
      F(NR, 8), GRAY, "ma")
 
-img.save("/home/ubuntu/makefun-news/entry6.png", optimize=True)
+img.save("/home/ubuntu/makefun-news/entry7.png", optimize=True)
 print("saved")
