@@ -222,11 +222,7 @@ def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, nu
     if num is not None:
         text(x1 - 5, y0 + int(bar * 0.22), str(num), f_lab, (255, 255, 255), "ra")
     iw = x1 - x0 - 12
-    px0, py0 = x0 + 4, y0 + bar + 3
-    px1, py1 = x0 + 4 + iw + 4, y0 + bar + 5 + ic
-    d.rectangle([px0, py0, px1, py1], fill=tint(accent, 0.16), outline=tint(accent, 0.42))
-    d.rectangle([px0, py0, px0 + 5, py1], fill=accent)
-    icon(kind, px0 + 8, py0 + 2, px1 - 4, py1 - 1, accent)
+    icon(kind, x0 + 6, y0 + bar + 4, x0 + 6 + iw, y0 + bar + 4 + ic, accent)
     yy = y0 + bar + 8 + ic
     f_h = F(SB, hl)
     yy = para(x0 + 6, yy, headline, f_h, x1 - x0 - 12, INK, lh=hl + 1, maxlines=3)
@@ -247,11 +243,7 @@ def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, nu
     if num is not None:
         text(x1 - 6, y0 + int(bar * 0.2), str(num), f_lab, (255, 255, 255), "ra")
     iw = x1 - x0 - 12
-    px0, py0 = x0 + 4, y0 + bar + 3
-    px1, py1 = x0 + 4 + iw + 4, y0 + bar + 5 + ic
-    d.rectangle([px0, py0, px1, py1], fill=tint(accent, 0.16), outline=tint(accent, 0.42))
-    d.rectangle([px0, py0, px0 + 5, py1], fill=accent)
-    icon(kind, px0 + 8, py0 + 2, px1 - 4, py1 - 1, accent)
+    icon(kind, x0 + 6, y0 + bar + 4, x0 + 6 + iw, y0 + bar + 4 + ic, accent)
     yy = y0 + bar + 8 + ic
     yy = para(x0 + 6, yy, headline, F(SB, hl), x1 - x0 - 12, INK, lh=hl + 2, maxlines=3)
     if deck:
@@ -290,11 +282,25 @@ ROW3 = [("coin", "MARKETS: BITCOIN", "Bitcoin at $56,900 in an AI-led selloff", 
         ("mine", "SYDNEY: COALMINE", "NSW passes Mount Pleasant mine law", C_OC, "OCEANIA", 12),
         ("boat", "BAYELSA: BOAT", "Burial boat capsizes; 30 dead, 300 missing", C_AF, "AFRICA", 13)]
 
+SRC = {
+    "HORMUZ: DRONE": "IRGC via IRIB",
+    "TEHRAN: TALKS": "Tehran \u00b7 Reuters",
+    "GAZA: STRIKES": "Gaza \u00b7 IDF, NBC",
+    "PERU: QUAKE 6.7": "USGS \u00b7 GDACS",
+    "GENEVA: ROBOTS": "Geneva \u00b7 Reuters",
+    "MARKETS: BITCOIN": "Markets \u00b7 Binance",
+    "DAVAO: 146 SAFE": "Davao \u00b7 AP, CNA",
+    "TOKYO: OIL": "Tokyo \u00b7 Kyodo",
+    "SYDNEY: COALMINE": "Sydney \u00b7 Guardian",
+    "BAYELSA: BOAT": "Bayelsa \u00b7 Daily Post",
+}
+
 def draw_row(row, y0, y1):
     cwid = (W - 2 * PAD - 4 * 5) // 5
     for i, (kind, label, head, accent, region, num) in enumerate(row):
         x0 = PAD + i * (cwid + 5)
-        card(x0, y0, x0 + cwid, y1, kind, label, head, accent, region, hl=13, ic=44, num=num, bar=15)
+        card(x0, y0, x0 + cwid, y1, kind, label, head, accent, region, hl=13, ic=44,
+             num=num, bar=15, src=SRC.get(label))
 
 draw_row(ROW2, 470, 616)
 draw_row(ROW3, 624, 770)
@@ -383,5 +389,5 @@ para(PAD + 74, DY0 + 4,
 text(W // 2, 1003, "THE WORLD IN ONE DAY  \u00b7  drawn from wire reports of 21 November 2026  \u00b7  counts and claims attributed to those who made them",
      F(NR, 8), GRAY, "ma")
 
-img.save("/home/ubuntu/makefun-news/entry5.png", optimize=True)
+img.save("/home/ubuntu/makefun-news/entry6.png", optimize=True)
 print("saved")
