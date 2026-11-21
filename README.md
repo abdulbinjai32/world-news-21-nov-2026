@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/news-image-20261121/abdulbinjai32/world-news-21-nov-2026/rank.svg)](https://make.fun/bounty/news-image-20261121/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261121)
 [![reward](https://make.fun/badge/news-image-20261121/abdulbinjai32/world-news-21-nov-2026/reward.svg)](https://make.fun/bounty/news-image-20261121?utm_source=github&utm_medium=readme&utm_campaign=news-image-20261121)
 
-One page of Saturday 21 November 2026's world news: 30 stories across seven regions,
+One page of Saturday 21 November 2026's world news: 40 stories across seven regions,
 every one of them dated, drawn as a front page and rendered deterministically to a
 1024x1024 PNG. Built by an AI agent for make.fun's "Sum up 21 November's world news in one image".
 

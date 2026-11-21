@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Draw 'THE WORLD IN ONE DAY' - Saturday 21 November 2026 (1024x1024)."""
+"""Draw 'THE WORLD IN ONE DAY' - Saturday 21 November 2026 (1024x1024).
+
+The page carries 40 stories from seven regions, all dated to the day, and is
+drawn from fixed inputs: the same code writes the same bytes on every run.
+"""
 import math
 from PIL import Image, ImageDraw, ImageFont
 
@@ -66,42 +70,39 @@ def box(x0, y0, x1, y1, fill=None, outline=GRAY, w=1):
 # ---------------- masthead ----------------
 f_rail = F(NB, 13)
 text(PAD, 5, "THE WORLD IN ONE DAY", f_rail, RED)
-text(W - PAD, 5, "30 STORIES  \u00b7  7 REGIONS  \u00b7  ALL DATED 21 NOVEMBER 2026",
-     f_rail, INK, "ra")
+text(W - PAD, 5, "40 STORIES  \u00b7  7 REGIONS  \u00b7  ALL DATED 21 NOVEMBER 2026", f_rail, INK, "ra")
 rule(24, w=2)
 
-text(W // 2, 27, "Saturday 21 November 2026", F(SB, 46), INK, "ma")
-text(W // 2, 78, "COP31 runs into a 13th day  \u00b7  three missiles downed over Riyadh  \u00b7  Russia's barrage kills eight in Ukraine",
-     F(SI, 13), GRAY, "ma")
-rule(95, col=RED, w=2)
+text(W // 2, 27, "Saturday 21 November 2026", F(SB, 48), INK, "ma")
+text(W // 2, 82, "COP31 runs into a 13th day  \u00b7  three missiles downed over Riyadh  \u00b7  eight killed in Ukraine",
+     F(SI, 14), GRAY, "ma")
+rule(99, col=RED, w=2)
 
-# ---------------- stat strip ----------------
 stats = [("13", "day of COP31, due to close on day 12"),
          ("3", "Houthi missiles downed over Riyadh"),
          ("8", "killed in Russia's overnight barrage"),
          ("6.7", "magnitude, central Peru, 00:09 UTC"),
          ("$56.9k", "bitcoin at 03:34 UTC, down 8.2%"),
          ("146", "safe after a jet's landing at Davao")]
-bx = PAD
 bw = (W - 2 * PAD) // 6
-f_num, f_lab = F(SB, 23), F(NR, 10)
+f_num, f_lab = F(SB, 24), F(NR, 10)
 for i, (num, lab) in enumerate(stats):
-    x0 = bx + i * bw
-    d.rectangle([x0 + 1, 104, x0 + 4, 148], fill=RED)
-    text(x0 + 9, 99, num, f_num, RED)
-    para(x0 + 9, 126, lab, f_lab, bw - 14, GRAY, lh=10, maxlines=2)
-rule(151)
+    x0 = PAD + i * bw
+    d.rectangle([x0 + 1, 107, x0 + 4, 151], fill=RED)
+    text(x0 + 9, 102, num, f_num, RED)
+    para(x0 + 9, 129, lab, f_lab, bw - 14, GRAY, lh=10, maxlines=2)
+rule(155)
 
-regions = [("EUROPE 4", C_EU), ("ASIA 9", C_AS), ("MIDDLE EAST 4", C_ME), ("AFRICA 3", C_AF),
-           ("AMERICAS 4", C_AM), ("OCEANIA 4", C_OC), ("GLOBAL 2", C_GL)]
+regions = [("EUROPE 6", C_EU), ("ASIA 11", C_AS), ("MIDDLE EAST 7", C_ME), ("AFRICA 4", C_AF),
+           ("AMERICAS 5", C_AM), ("OCEANIA 4", C_OC), ("GLOBAL 3", C_GL)]
 f_reg = F(NB, 10)
 rx = PAD
 for lab, col in regions:
     wt = tw(lab, f_reg) + 14
-    d.rectangle([rx, 157, rx + wt, 174], fill=col)
-    text(rx + 7, 160, lab, f_reg, (255, 255, 255))
+    d.rectangle([rx, 160, rx + wt, 177], fill=col)
+    text(rx + 7, 163, lab, f_reg, (255, 255, 255))
     rx += wt + 6
-rule(179)
+rule(182)
 
 # ---------------- pictograms ----------------
 def icon(kind, x0, y0, x1, y1, accent):
@@ -216,6 +217,8 @@ def icon(kind, x0, y0, x1, y1, accent):
         d.rectangle([x0 + 8, y0 + 6, x1 - 8, y1 - 6], outline=accent, width=3)
 
 # ---------------- card ----------------
+# one card = colour bar + pictogram + serif headline + optional deck; the accent
+# colour is the story's region, so the page reads as regions at a glance.
 def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, num=None,
          deck=None, bar=15):
     box(x0, y0, x1, y1, fill=(253, 251, 245), outline=(198, 191, 176))
@@ -233,23 +236,46 @@ def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, nu
         para(x0 + 6, yy + 3, deck, F(NR, 10), x1 - x0 - 12, GRAY, lh=11, maxlines=4)
     text(x1 - 5, y1 - 12, region, F(NB, 9), accent, "ra")
 
+
+def tint(accent, k=0.10):
+    return tuple(int(CREAM[c] * (1 - k) + accent[c] * k) for c in range(3))
+
+def card(x0, y0, x1, y1, kind, label, headline, accent, region, hl=14, ic=48, num=None,
+         deck=None, bar=15, src=None):
+    box(x0, y0, x1, y1, fill=tint(accent, 0.07), outline=(198, 191, 176))
+    d.rectangle([x0, y0, x1, y0 + bar], fill=accent)
+    f_lab = F(NB, 11 if bar >= 17 else 10)
+    text(x0 + 6, y0 + int(bar * 0.2), label, f_lab, (255, 255, 255))
+    if num is not None:
+        text(x1 - 6, y0 + int(bar * 0.2), str(num), f_lab, (255, 255, 255), "ra")
+    iw = x1 - x0 - 12
+    icon(kind, x0 + 6, y0 + bar + 4, x0 + 6 + iw, y0 + bar + 4 + ic, accent)
+    yy = y0 + bar + 8 + ic
+    yy = para(x0 + 6, yy, headline, F(SB, hl), x1 - x0 - 12, INK, lh=hl + 2, maxlines=3)
+    if deck:
+        yy = para(x0 + 7, yy + 4, deck, F(NR, 11), x1 - x0 - 14, GRAY, lh=12, maxlines=3)
+    base = y1 - 13
+    text(x1 - 6, base, region, F(NB, 8), accent, "ra")
+    if src:
+        text(x0 + 7, base, src, F(NR, 8), GRAY)
+
 LEADS = [
-    dict(kind="globe", label="COP31: OVERTIME", accent=C_EU, region="GLOBAL",
-         headline="Climate summit runs into a 13th day with no deal",
-         deck="Antalya's closing session was pushed to Saturday; the draft drops all mention of fossil fuels and a $120bn adaptation target. 23 countries want the words back."),
-    dict(kind="missiles", label="RIYADH: MISSILES", accent=C_ME, region="MIDDLE EAST",
-         headline="Three Houthi missiles downed over Riyadh",
-         deck="Coalition air defences intercepted three ballistic missiles early Saturday, a second attack on the capital in days."),
-    dict(kind="barrage", label="UKRAINE: BARRAGE", accent=RED, region="EUROPE",
-         headline="Eight killed as Russia fires 400 drones and 110 missiles",
-         deck="Overnight into Saturday; two ballistic missiles hit a Kryvyi Rih car park, killing a 7-year-old."),
+    dict(kind="globe", label="COP31: OVERTIME", accent=C_EU, region="GLOBAL", src="Antalya \u00b7 Reuters, AFP",
+         headline="COP31 runs into a 13th day with no deal",
+         deck="Closing session pushed to Saturday; the draft drops fossil fuels and a $120bn adaptation target. 23 countries want the words back."),
+    dict(kind="missiles", label="RIYADH: MISSILES", accent=C_ME, region="MIDDLE EAST", src="Riyadh \u00b7 Saudi-led coalition",
+         headline="Three missiles downed over Riyadh",
+         deck="Air defences intercepted three Houthi ballistic missiles early Saturday, a second attack on the capital in days."),
+    dict(kind="barrage", label="UKRAINE: BARRAGE", accent=RED, region="EUROPE", src="Kyiv \u00b7 Ukraine air force",
+         headline="Eight killed in Russia's barrage",
+         deck="400 drones and 110 missiles overnight into Saturday; two hit a Kryvyi Rih car park, killing a 7-year-old."),
 ]
-cy0, cy1 = 187, 456
+cy0, cy1 = 190, 462
 cw = (W - 2 * PAD - 2 * 8) // 3
 for i, s in enumerate(LEADS):
     x0 = PAD + i * (cw + 8)
     card(x0, cy0, x0 + cw, cy1, s["kind"], s["label"], s["headline"], s["accent"], s["region"],
-         hl=18, ic=112, num=i + 1, deck=s["deck"], bar=17)
+         hl=24, ic=118, num=i + 1, deck=s["deck"], bar=18, src=s["src"])
 
 ROW2 = [("drone", "HORMUZ: DRONE", "Iran says it downed a 58th US MQ-9", C_ME, "MIDDLE EAST", 4),
         ("handshake", "TEHRAN: TALKS", "Araqchi still hopes for a deal; Trump says no", C_ME, "MIDDLE EAST", 5),
@@ -266,19 +292,18 @@ def draw_row(row, y0, y1):
     cwid = (W - 2 * PAD - 4 * 5) // 5
     for i, (kind, label, head, accent, region, num) in enumerate(row):
         x0 = PAD + i * (cwid + 5)
-        card(x0, y0, x0 + cwid, y1, kind, label, head, accent, region, hl=14, ic=50, num=num, bar=16)
+        card(x0, y0, x0 + cwid, y1, kind, label, head, accent, region, hl=13, ic=44, num=num, bar=15)
 
-draw_row(ROW2, 464, 632)
-draw_row(ROW3, 640, 800)
+draw_row(ROW2, 470, 616)
+draw_row(ROW3, 624, 770)
 
-# ---------------- bottom ----------------
-MY0, MY1 = 808, 952
-mx1 = PAD + 372
+MY0, MY1 = 778, 950
+mx1 = PAD + 300
 box(PAD, MY0, mx1, MY1, fill=(251, 249, 241), outline=(198, 191, 176))
 text(PAD + 7, MY0 + 5, "WHERE IT HAPPENED", F(NB, 10), RED)
-text(PAD + 7, MY0 + 18, "stories 1 to 13, numbered as above", F(NR, 9), GRAY)
-mw0, mw1 = PAD + 12, mx1 - 12
-mh0, mh1 = MY0 + 34, MY1 - 12
+text(PAD + 7, MY0 + 18, "stories 1-13", F(NR, 9), GRAY)
+mw0, mw1 = PAD + 10, mx1 - 10
+mh0, mh1 = MY0 + 32, MY1 - 14
 LAND = (208, 198, 174)
 cons = [[(-170, 65), (-100, 70), (-60, 60), (-55, 45), (-70, 25), (-100, 18), (-120, 30), (-165, 55)],
         [(-80, 12), (-35, 8), (-35, -10), (-50, -25), (-58, -40), (-70, -50), (-76, 0)],
@@ -307,44 +332,54 @@ for lon, lat, n in dots:
 ax1 = W - PAD
 box(mx1 + 8, MY0, ax1, MY1, fill=(251, 249, 241), outline=(198, 191, 176))
 ALSO = [
-    ("EUROPE", "Rome: general strike and protests in 100+ cities"),
-    ("EUROPE", "Poland: leaders call Russian missiles a provocation"),
-    ("MIDDLE EAST", "Yemen: army says 193 Houthis hit in 854 operations"),
+    ("EUROPE", "Rome: strike and protests in 100+ cities"),
+    ("EUROPE", "Poland: missiles there called a provocation"),
+    ("EUROPE", "Brussels: UK and EU seal trade, youth deals"),
+    ("EUROPE", "Antalya: EU warns of a 'fossil summit'"),
+    ("GLOBAL", "Antalya: 23 countries demand fossil-fuel text"),
+    ("MIDDLE EAST", "Tehran: tanker burns after a mine off Khasab"),
+    ("MIDDLE EAST", "Trump claims 'total control' of Hormuz"),
+    ("MIDDLE EAST", "Yemen: army reports 854 operations"),
     ("ASIA", "Beijing: Singapore and China plan 20+ deals"),
-    ("ASIA", "New Delhi: Modi opens bridges and plants in Bihar"),
+    ("ASIA", "New Delhi: Modi opens works in Bihar"),
     ("ASIA", "Rawalpindi: Pakistan beat Sri Lanka by 8 wickets"),
-    ("ASIA", "Dhaka: service chiefs call on PM on Armed Forces Day"),
-    ("ASIA", "Jakarta: Indonesia and EU finish CEPA before signing"),
-    ("ASIA", "Tokyo: Japan wary of regular US-China-Russia summits"),
-    ("ASIA", "New Delhi: India condemns attacks on Hormuz shipping"),
+    ("ASIA", "Dhaka: service chiefs call on PM on Forces Day"),
+    ("ASIA", "Jakarta: Indonesia and EU finish CEPA talks"),
+    ("ASIA", "Tokyo: Japan wary of a US-China-Russia bloc"),
+    ("ASIA", "New Delhi: India condemns Hormuz shipping attacks"),
+    ("ASIA", "Beijing: China tells Japan to fix Taiwan words"),
+    ("ASIA", "Trump: China's nuclear build 'hot and heavy'"),
     ("AFRICA", "Kogi: troops rescue 21 kidnap victims"),
-    ("AFRICA", "Nairobi: Kenya shilling steady, region's seen weaker"),
+    ("AFRICA", "Nairobi: Kenya shilling steady, region weaker"),
+    ("AFRICA", "Khartoum: army clears RSF posts in Kordofan"),
     ("AMERICAS", "Bras\u00edlia: Bolsonaro taken to hospital"),
-    ("AMERICAS", "Las Vegas: Verstappen on pole, Antonelli fastest"),
-    ("AMERICAS", "Las Vegas: Fundora keeps undisputed flyweight title"),
-    ("OCEANIA", "Wellington: Rahul 136, a first for an Indian opener"),
-    ("OCEANIA", "Melbourne: Kangaroos into 4th straight AFLW final"),
+    ("AMERICAS", "Las Vegas: Verstappen on pole for the GP"),
+    ("AMERICAS", "Las Vegas: Fundora keeps flyweight titles"),
+    ("AMERICAS", "Trump sees a Mexico deal near, presses Canada"),
+    ("OCEANIA", "Wellington: Rahul 136, a first for an opener"),
+    ("OCEANIA", "Melbourne: Kangaroos into a 4th AFLW final"),
+    ("OCEANIA", "Melbourne: Cummins keeps the captaincy"),
 ]
-f_al, f_alr = F(NR, 10), F(NB, 8)
-text(mx1 + 15, MY0 + 4, "ALSO ON SATURDAY 21 NOVEMBER 2026 \u2014 %d MORE" % len(ALSO), F(NB, 11), RED)
+f_al, f_alr = F(NR, 9), F(NB, 8)
+text(mx1 + 15, MY0 + 5, "ALSO ON SATURDAY 21 NOVEMBER 2026 \u2014 %d MORE" % len(ALSO), F(NB, 10), RED)
 col_w = (ax1 - mx1 - 26) // 2
 half = (len(ALSO) + 1) // 2
 for i, (reg, line) in enumerate(ALSO):
     col, row = i // half, i % half
     x = mx1 + 15 + col * (col_w + 8)
-    y = MY0 + 26 + row * 18
+    y = MY0 + 24 + row * 14.4
     text(x, y, reg, f_alr, (120, 116, 108))
     for k, ln in enumerate(wrap(line, f_al, col_w - 4)[:2]):
-        text(x, y + 8 + k * 9.4, ln, f_al, INK)
+        text(x, y + 8 + k * 8.4, ln, f_al, INK)
 
-DY0 = 958
+DY0 = 956
 box(PAD, DY0, W - PAD, 998, fill=(251, 245, 233), outline=RED)
 text(PAD + 7, DY0 + 4, "DATE CHECK", F(NB, 10), RED)
 para(PAD + 74, DY0 + 4,
-     "Every story happened, or was first reported, on Saturday 21 November 2026. Friday's COP31 draft and the missiles that fell in Poland are shown as Saturday's deadlock and fallout. Older items, and claims denied that day, are left out.",
+     "Every story happened, or was first reported, on Saturday 21 November 2026; items first reported on Friday, such as the COP31 draft and the missiles that fell in Poland, are shown as Saturday's deadlock and fallout. Older items, and claims denied that day, are left out.",
      F(NR, 9), W - 2 * PAD - 84, INK, lh=11, maxlines=3)
 text(W // 2, 1003, "THE WORLD IN ONE DAY  \u00b7  drawn from wire reports of 21 November 2026  \u00b7  counts and claims attributed to those who made them",
      F(NR, 8), GRAY, "ma")
 
-img.save("/home/ubuntu/makefun-news/entry.png", optimize=True)
-print("saved", img.size)
+img.save("/home/ubuntu/makefun-news/entry4.png", optimize=True)
+print("saved")
