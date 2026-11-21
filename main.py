@@ -10,6 +10,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCE = os.path.join(HERE, "entry.png")
+MAX_BYTES = 1048576
 
 
 def target_dir():
@@ -28,7 +29,7 @@ def main():
     shutil.copyfile(SOURCE, out)
     with open(out, "rb") as fh:
         data = fh.read()
-    if len(data) > 1048576:
+    if len(data) > MAX_BYTES:
         raise SystemExit("image exceeds 1 MiB")
     sys.stdout.write("wrote %s (%d bytes)\n" % (out, len(data)))
 
